@@ -12,6 +12,11 @@ class UserController extends Controller
     }
 
     public function store(Request $request){
+        $this->validate($request, [
+            'name'      => 'requered|max:255',
+            'email'     => 'requered|unique:users|max:255',
+            'password'  => 'requered|max:255',
+        ]);
         $user = new \App\User($request->all());
         $user->save();
 
