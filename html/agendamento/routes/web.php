@@ -2,6 +2,7 @@
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
+    // return str_random(32);
 });
 $router->post('/api/login', 'UserController@login');
 
