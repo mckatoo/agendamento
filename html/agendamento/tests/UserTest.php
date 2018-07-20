@@ -5,7 +5,7 @@ use App\User;
 
 class UserTest extends TestCase
 {
-    use DatabaseTransactions;
+    // use DatabaseTransactions;
 
     public $dados = [];
     public $api_token = [];
@@ -18,14 +18,27 @@ class UserTest extends TestCase
             'password' => '123',
             'password_confirmation' => '123',
         ];
-        $this->api_token = ['api_token' => User::where('api_token','<>','')->first()->api_token];
+        // $this->api_token = ['api_token' => User::where('api_token','<>','')->first()->api_token];
+        $this->api_token = ['api_token' => str_random(60)];
     }
-
-    public function testCreateUser()
+    
+    public function testLogin()
     {
         $this->post('/api/user', $this->dados, $this->api_token);
         $this->assertResponseOK();
 
+        $this->post('/api/login', $this->dados);
+        $this->assertResponseOK();
+
+        $resposta = (array) json_decode($this->response->content());
+        $this->assertArrayHasKey('api_token',$resposta);
+    }
+    
+    public function testCreateUser()
+    {
+        $this->post('/api/user', $this->dados, $this->api_token);
+        $this->assertResponseOK();
+        
         $resposta = (array)json_decode($this->response->content());
 
         $this->assertArrayHasKey('id', $resposta);
@@ -48,18 +61,6 @@ class UserTest extends TestCase
         $this->assertArrayHasKey('id', $resposta);
         $this->assertArrayHasKey('name', $resposta);
         $this->assertArrayHasKey('email', $resposta);
-    }
-
-    public function testLogin()
-    {
-        $this->post('/api/user', $this->dados, $this->api_token);
-        $this->assertResponseOK();
-
-        $this->post('/api/login', $this->dados);
-        $this->assertResponseOK();
-
-        $resposta = (array) json_decode($this->response->content());
-        $this->assertArrayHasKey('api_token',$resposta);
     }
 
     public function testUpdateUserNoPassword()
