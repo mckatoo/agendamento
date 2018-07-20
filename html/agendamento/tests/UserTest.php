@@ -5,7 +5,7 @@ use App\User;
 
 class UserTest extends TestCase
 {
-    // use DatabaseTransactions;
+    use DatabaseTransactions;
 
     public $dados = [];
     public $api_token = [];
@@ -18,16 +18,15 @@ class UserTest extends TestCase
             'password' => '123',
             'password_confirmation' => '123',
         ];
-        // $this->api_token = ['api_token' => User::where('api_token','<>','')->first()->api_token];
-        $this->api_token = ['api_token' => str_random(60)];
+        $this->api_token = ['api_token' => User::where('api_token','<>','')->first()->api_token];
     }
     
     public function testLogin()
     {
-        $this->post('/api/user', $this->dados, $this->api_token);
+        $this->post('/api/user', $this->dados, $this->api_token); //UserController@store
         $this->assertResponseOK();
-
-        $this->post('/api/login', $this->dados);
+        
+        $this->post('/api/login', $this->dados); //UserController@login
         $this->assertResponseOK();
 
         $resposta = (array) json_decode($this->response->content());

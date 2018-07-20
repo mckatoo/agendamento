@@ -9,35 +9,30 @@ use Illuminate\Support\Facades\Crypt;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        //
-    }
-
     public function login(Request $request)
     {
-        $dados = $request->only('email','password');
-        $user = User::where('email',$dados['email'])
+        $dados = $request->only('email', 'password');
+        $user = User::where('email', $dados['email'])
             ->first();
-        if(Crypt::decrypt($user->password) == $dados['password']){
+        if (Crypt::decrypt($user->password) == $dados['password']) {
             $user->api_token = str_random(60);
             $user->update();
             return ['api_token' => $user->api_token];
-        }else{
-            return new Response('Login ou usuário inválido.',401);
+        } else {
+            return new Response('Login ou usuário inválido.', 401);
         }
     }
-    
+
     public function store(Request $request)
     {
         $this->validate($request, [
             'name' => 'required|max:255',
             'email' => 'required|unique:users|max:255',
             'password' => 'required|confirmed|max:255',
-            ]);
-            $user = new User($request->all());
-            $user->password = Crypt::encrypt($request->input('password'));
-            $user->api_token = str_random(60);
+        ]);
+        $user = new User($request->all());
+        $user->password = Crypt::encrypt($request->input('password'));
+        $user->api_token = str_random(60);
         $user->save();
         return $user;
     }
@@ -51,7 +46,7 @@ class UserController extends Controller
         isset($request->all()['password'])
             ? $dadosValidacao['password'] = 'required|confirmed|max:255'
             : null;
-        $this->validate($request,$dadosValidacao);
+        $this->validate($request, $dadosValidacao);
         $user = User::find($id);
         $user->name = $request->input('name');
         $user->email = $request->input('email');
@@ -62,17 +57,13 @@ class UserController extends Controller
         return $user;
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         User::destroy($id)
             ? $response = new Response('Removido com sucesso!', 200)
-            : $response = new Response('Erro ao remover!',401);
-        
+            : $response = new Response('Erro ao remover!', 401);
+
         return $response;
-        // if(User::destroy($id)){
-        //     return new Response('Removido com sucesso!',200);
-        // }else{
-        //     return new Response('Erro ao remover!',401);
-        // }
     }
 
     public function id($id)
@@ -87,6 +78,6 @@ class UserController extends Controller
 
     public function name($name)
     {
-        return User::where('name', 'like', '%'.$name.'%')->orderBy('name','desc')->get();
+        return User::where('name', 'like', '%' . $name . '%')->orderBy('name', 'desc')->get();
     }
 }
