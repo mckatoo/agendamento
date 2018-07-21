@@ -26,7 +26,10 @@ class UserTest extends TestCase
         $this->post('/api/user', $this->dados, $this->api_token); //UserController@store
         $this->assertResponseOK();
         
-        $this->post('/api/login', $this->dados); //UserController@login
+        $this->post('/api/login', [ //UserController@login
+            'email' => 'email' . date('Ymdis') . '_' . rand(1, 100) . '@teste.com',
+            'password' => '123',
+        ]);
         $this->assertResponseOK();
 
         $resposta = (array) json_decode($this->response->content());
