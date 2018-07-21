@@ -18,18 +18,17 @@ class ProfessorTest extends TestCase
             'professor' => 'Professor 01' . date('Ymdis') . ' ' . rand(1, 100),
         ];
         $this->dadosLogin = [
-            'name' => 'Nome 01' . date('Ymdis') . ' ' . rand(1, 100),
-            'email' => 'email' . date('Ymdis') . '_' . rand(1, 100) . '@teste.com',
-            'password' => '123',
-            'password_confirmation' => '123',
+            'name' => 'Nome 01201807201038 53',
+            'email' => 'email201807201038_28@teste.com',
+            'password' => 'eyJpdiI6IjR0XC81R2lVdUVvcmZkb1I4ckRnRVpnPT0iLCJ2YWx1ZSI6IjJaZWRHMGlqRUt2QTdLc1V6OFBPdVE9PSIsIm1hYyI6ImEyZGQ5ODMwOTcyYWEyZGM3MDRiN2ZiODk0YWQyODczMmZhMTE1YjdiMjY1OTUwMTY4OWQ4ZTc1OWU5M2VjNDUifQ==',
         ];
-        $this->api_token = ['api_token' => User::where('api_token', '<>', '')->first()->api_token];
+        $this->api_token = ['api_token' => User::where('email', 'email201807201038_28@teste.com')->first()->api_token];
     }
 
     public function testLogin()
     {
-        $this->post('/api/user', $this->dadosLogin, $this->api_token); //UserController@store
-        $this->assertResponseOK();
+        // $this->post('/api/user', $this->dadosLogin, $this->api_token); //UserController@store
+        // $this->assertResponseOK();
 
         $this->post('/api/login', $this->dadosLogin); //UserController@login
         $this->assertResponseOK();
@@ -40,7 +39,7 @@ class ProfessorTest extends TestCase
     
     public function testCreateProfessor()
     {
-        $this->post('/api/professor', $this->dados);
+        $this->post('/api/professor', $this->dados, $this->api_token);
         $this->assertResponseOK();
         
         // $resposta = (array)json_decode($this->response->content());
