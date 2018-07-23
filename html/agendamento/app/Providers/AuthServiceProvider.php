@@ -31,13 +31,13 @@ class AuthServiceProvider extends ServiceProvider
         // the User instance via an API token or any other method necessary.
 
         $this->app['auth']->viaRequest('api', function ($request) {
-            $api_token = '';
-            if ($request->header('api_token')) {
-                $api_token = $request->header('api_token');
+            $remember_token = '';
+            if ($request->header('remember_token')) {
+                $remember_token = $request->header('remember_token');
             } else {
-                $api_token = $request->input('api_token');
+                $remember_token = $request->input('remember_token');
             }
-            return User::where('api_token', $api_token)->first();
+            return User::where('remember_token', $remember_token)->first();
         });
     }
 }

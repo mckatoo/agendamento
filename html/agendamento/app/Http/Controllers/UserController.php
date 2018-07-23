@@ -11,13 +11,12 @@ class UserController extends Controller
 {
     public function login(Request $request)
     {
-        $dados = $request->only('email', 'password');
-        $user = User::where('email', $dados['email'])
-            ->first();
+        $dados = $request->only('email','username','password');
+        $user = User::where('username', $dados['username'])->orWhere('email', $dados['email'])->first();
         if (Crypt::decrypt($user->password) == $dados['password']) {
-            $user->api_token = str_random(60);
+            $user->remember_token = str_random(60);
             $user->update();
-            return ['api_token' => $user->api_token];
+            return ['remember_token' => $user->remember_token];
         } else {
             return new Response('Login ou usuário inválido.', 401);
         }
@@ -27,12 +26,13 @@ class UserController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|max:255',
+            'username' => 'required|max:255',
             'email' => 'required|unique:users|max:255',
             'password' => 'required|confirmed|max:255',
         ]);
         $user = new User($request->all());
         $user->password = Crypt::encrypt($request->input('password'));
-        $user->api_token = str_random(60);
+        $user->remember_token = str_random(60);
         $user->save();
         return $user;
     }
@@ -41,6 +41,7 @@ class UserController extends Controller
     {
         $dadosValidacao = [
             'name' => 'required|max:255',
+            'username' => 'required|max:255',
             'email' => 'required|unique:users|max:255',
         ];
         isset($request->all()['password'])

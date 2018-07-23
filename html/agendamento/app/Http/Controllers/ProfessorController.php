@@ -10,12 +10,11 @@ class ProfessorController extends Controller
 {
     public function store(Request $request)
     {
-        return $request;
         $this->validate($request, [
             'professor' => 'required|max:255',
         ]);
         $professor = new Professor($request->all());
-        $professor->professor = $request->input('professor');
+        print_r($professor->professor);
         $professor->save();
         return $professor;
     }
@@ -25,18 +24,19 @@ class ProfessorController extends Controller
         $dadosValidacao = [
             'professor' => 'required|max:255',
         ];
-        $this->validate($request,$dadosValidacao);
+        $this->validate($request, $dadosValidacao);
         $professor = Professor::find($id);
         $professor->professor = $request->input('professor');
         $professor->update();
         return $professor;
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         Professor::destroy($id)
             ? $response = new Response('Removido com sucesso!', 200)
-            : $response = new Response('Erro ao remover!',401);
-        
+            : $response = new Response('Erro ao remover!', 401);
+
         return $response;
     }
 
@@ -52,6 +52,6 @@ class ProfessorController extends Controller
 
     public function name($name)
     {
-        return Professor::where('professor', 'like', '%'.$name.'%')->orderBy('professor','desc')->get();
+        return Professor::where('professor', 'like', '%' . $name . '%')->orderBy('professor', 'desc')->get();
     }
 }
