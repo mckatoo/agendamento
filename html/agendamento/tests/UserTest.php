@@ -21,36 +21,36 @@ class UserTest extends TestCase
             'password' => $password,
             'password_confirmation' => $password
         ];
-        $this->login = User::all()[rand(0, User::all()->count() - 1)];
+        $this->login = User::first();
     }
 
-    public function testLoginUsername()
-    {
-        $this->post('/api/login', [
-            'email' => '',
-            'username' => $this->login->username,
-            'password' => Crypt::decrypt($this->login->password)
-        ]);
-        $this->assertResponseOK();
-        // print_r('/////// - LOGIN COM USUARIO ' . $this->login->username . ' - ///////////');
+    // public function testLoginUsername()
+    // {
+    //     $this->post('/api/login', [
+    //         'email' => '',
+    //         'username' => $this->login->username,
+    //         'password' => Crypt::decrypt($this->login->password)
+    //     ]);
+    //     $this->assertResponseOK();
+    //     // print_r('/////// - LOGIN COM USUARIO ' . $this->login->username . ' - ///////////');
 
-        $resposta = (array)json_decode($this->response->content());
-        $this->assertArrayHasKey('remember_token', $resposta);
-    }
+    //     $resposta = (array)json_decode($this->response->content());
+    //     $this->assertArrayHasKey('remember_token', $resposta);
+    // }
 
-    public function testLoginEmail()
-    {
-        $this->post('/api/login', [
-            'email' => $this->login->email,
-            'username' => '',
-            'password' => Crypt::decrypt($this->login->password)
-        ]);
-        // print_r('/////// - LOGIN COM EMAIL ' . $this->login->email . ' - ///////////');
-        $this->assertResponseOK();
+    // public function testLoginEmail()
+    // {
+    //     $this->post('/api/login', [
+    //         'email' => $this->login->email,
+    //         'username' => '',
+    //         'password' => Crypt::decrypt($this->login->password)
+    //     ]);
+    //     // print_r('/////// - LOGIN COM EMAIL ' . $this->login->email . ' - ///////////');
+    //     $this->assertResponseOK();
 
-        $resposta = (array)json_decode($this->response->content());
-        $this->assertArrayHasKey('remember_token', $resposta);
-    }
+    //     $resposta = (array)json_decode($this->response->content());
+    //     $this->assertArrayHasKey('remember_token', $resposta);
+    // }
 
     public function testCreateUser()
     {

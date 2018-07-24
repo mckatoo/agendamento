@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Crypt;
 
 class ProfessorTest extends TestCase
 {
-    use DatabaseTransactions;
+    // use DatabaseTransactions;
 
     public $dados = [];
     public $login = [];
@@ -17,23 +17,9 @@ class ProfessorTest extends TestCase
         $this->dados = [
             'professor' => 'Professor 01' . date('Ymdis') . ' ' . rand(1, 100)
         ];
-        $this->login = User::all()[rand(0, User::all()->count() - 1)];
+        $this->login = User::first();
     }
 
-    public function testLoginProfessorname()
-    {
-        $this->post('/api/login', [
-            'email' => '',
-            'username' => $this->login->username,
-            'password' => Crypt::decrypt($this->login->password)
-        ]);
-        $this->assertResponseOK();
-        // print_r('/////// - LOGIN COM USUARIO ' . $this->login->username . ' - ///////////');
-
-        $resposta = (array)json_decode($this->response->content());
-        $this->assertArrayHasKey('remember_token', $resposta);
-    }
-    
     public function testCreateProfessor()
     {
         $this->post('/api/professor', $this->dados, ['remember_token' => $this->login->remember_token]);

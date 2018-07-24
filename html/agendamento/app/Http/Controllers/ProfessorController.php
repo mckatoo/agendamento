@@ -13,18 +13,17 @@ class ProfessorController extends Controller
         $this->validate($request, [
             'professor' => 'required|max:255',
         ]);
-        $professor = new Professor($request->all());
-        print_r($professor->professor);
+        $professor = new Professor();
+        $professor->professor = $request->professor;
         $professor->save();
         return $professor;
     }
 
     public function update(Request $request, $id)
     {
-        $dadosValidacao = [
+        $this->validate($request, [
             'professor' => 'required|max:255',
-        ];
-        $this->validate($request, $dadosValidacao);
+        ]);
         $professor = Professor::find($id);
         $professor->professor = $request->input('professor');
         $professor->update();
